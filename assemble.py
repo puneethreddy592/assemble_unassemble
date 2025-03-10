@@ -24,6 +24,7 @@ class Assembler:
     def int_27b_binary(self,value):
         if not (-67108864 <= value <= 67108863):
             raise ValueError("Value out of range for 27-bit signed integer")
+        value = int(value/4)
         binary_27bit = bin(value & 0x7FFFFFF)[2:].zfill(27)  
         return binary_27bit
    
@@ -74,7 +75,7 @@ class Assembler:
             with open(self.filename, "r") as file:
                 address = self.start_address
                 for line in file:
-                    clean_line = line.split(";")[0].strip()
+                    clean_line = re.sub(r";.*", "", line).strip()
                     if not clean_line:
                         continue
                     if clean_line.startswith(".") and clean_line.endswith(":"):
@@ -179,24 +180,38 @@ class Assembler:
             print(f"{format(address, 'X')}: {binval}")
     import os
 
-    def print_bin(self):
-        with open("output.bin", "wb") as f:
+    def print_bin(self,filename="output.bin"):
+        with open(filename, "wb") as f:
             for _, binval in self.instruction_encoded:
                 f.write(int(binval, 2).to_bytes(4, byteorder='big'))
-        print("File size:", os.path.getsize("output.bin"), "bytes")
+        print(f"File '{filename}' written successfully. Size: {os.path.getsize(filename)} bytes") 
 
-    def print_txt(self):
-    	with open("output.txt", "w") as f:
+    def print_hex(self,filename="output.hex"):
+    	with open(filename, "w") as f:
+            for _, binval in self.instruction_encoded:
+            	f.write(f"{int(binval, 2):08X}\n")
+    	print(f"File '{filename}' written successfully. Size: {os.path.getsize(filename)} bytes")
+
+    def print_bintxt(self, filename="outputbin.txt"):
+    	with open(filename, "w") as f:
             for addr, binval in self.instruction_encoded:
                 f.write(f"{binval}\n")
-    	print("File size:", os.path.getsize("output.txt"), "bytes")    
+    	print(f"File '{filename}' written successfully. Size: {os.path.getsize(filename)} bytes") 
 
+    def print_hextxt(self, filename="outputhex.txt"):
+    	with open(filename, "w") as f:
+            for addr, binval in self.instruction_encoded:
+            	hex_val = f"{int(binval, 2):08X}"  
+            	formatted_hex = " ".join(hex_val[i:i+2] for i in range(0, len(hex_val), 2))
+            	f.write(formatted_hex + "\n")
+    	print(f"File '{filename}' written successfully. Size: {os.path.getsize(filename)} bytes")
+ 
 
     def print_tokenized_data(self):
         for address, tokens, modifier in self.tokenized_instructions:
             print(f"{format(address, 'X')}: {tokens} {modifier}")
         print(self.labels)
-        print(self.instruction_encoded)
+        
 
 def main():
     parser = argparse.ArgumentParser(description="SimpleRisc Assembler")
@@ -204,7 +219,9 @@ def main():
     parser.add_argument("-t", "--tokens", action="store_true", help="Print tokenized instructions")
     parser.add_argument("-e", "--encode", action="store_true", help="Print encoded instructions")
     parser.add_argument("-b", "--bin", action="store_true", help="Generate binary output")
-    parser.add_argument("-x", "--txt", action="store_true", help="Generate text output")
+    parser.add_argument("-hh", "--hex", action="store_true", help="Generate hex output")
+    parser.add_argument("-tb", "--txtbin", action="store_true", help="Generate binary output in text file")
+    parser.add_argument("-th", "--txthex", action="store_true", help="Generate hex output in text file")
 
     args = parser.parse_args()
     assembler = Assembler(args.file)
@@ -219,8 +236,12 @@ def main():
         assembler.print_encoded()
     if args.bin:
         assembler.print_bin()
-    if args.txt:
-        assembler.print_txt()
+    if args.hex:
+        assembler.print_hex()
+    if args.txtbin:
+        assembler.print_bintxt()
+    if args.txthex:
+        assembler.print_hextxt()
 
 if __name__ == "__main__":
     main()
