@@ -31,6 +31,7 @@ Oh... wait! You are not a robot? 🤖❌ Are you human?
 
 Before we proceed, please verify that you're a human! 
 <p align="center">
+  <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0" target="_blank">
   <img src="verifcation.png" alt="Human Verification" width="300px">
 </p>
 
