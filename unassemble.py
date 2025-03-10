@@ -59,8 +59,9 @@ class Disassembler:
                                 self.instructions.append(f"{binary_instr}  # {mnemonic} {self.reg_from_bin(rs1)}, {self.reg_from_bin(rs1)}")
                         elif mnemonic in ["add", "sub", "mul", "div", "mod", "and", "or", "lsl", "lsr", "asr"]:
                             if imm_flag == "1":
-                                imm = self.bin_to_int(imm_or_rs2, signed=(mod != "01"))
-                                self.instructions.append(f"{binary_instr}  # {mnemonic} {self.reg_from_bin(rd)}, {self.reg_from_bin(rs1)}, {imm}")
+                                imm = self.bin_to_int(imm_or_rs2, signed=(mod != "00"))
+                                modifier = "u" if mod == "01" else "h" if mod == "10" else ""
+                                self.instructions.append(f"{binary_instr}  # {mnemonic}{modifier} {self.reg_from_bin(rd)}, {self.reg_from_bin(rs1)}, {imm}")
                             else:
                                 self.instructions.append(f"{binary_instr}  # {mnemonic} {self.reg_from_bin(rd)}, {self.reg_from_bin(rs1)}, {self.reg_from_bin(imm_or_rs2[:4])}")
                         elif mnemonic in ["ld", "st"]:
@@ -74,21 +75,23 @@ class Disassembler:
             print(f"Error: File '{self.filename}' not found.")
             return
     
-    def save_to_file(self, output_file):
+    def save_to_file(self, output_file, include_binary):
         with open(output_file, "w") as f:
             for instr in self.instructions:
-                f.write(instr + "\n")
+                disassembled_part = instr.split("#")[-1].strip()
+                f.write((instr if include_binary else disassembled_part) + "\n")
         print(f"Disassembled binary saved to {output_file}")
 
 def main():
     parser = argparse.ArgumentParser(description="SimpleRisc Disassembler")
     parser.add_argument("-f", "--file", required=True, help="Input text file with binary instructions")
     parser.add_argument("-o", "--output", required=True, help="Output text file to save disassembled binary")
+    parser.add_argument("-i", "--include-binary", action="store_true", help="Include binary instructions in output")
     
     args = parser.parse_args()
     disassembler = Disassembler(args.file)
     disassembler.disassemble()
-    disassembler.save_to_file(args.output)
+    disassembler.save_to_file(args.output, args.include_binary)
 
 if __name__ == "__main__":
     main()
