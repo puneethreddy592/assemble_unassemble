@@ -39,7 +39,7 @@ Before we proceed, please verify that you're a human!
 
 ## 🛠 Using the Assembler (`assemble.py`)
 
-Want to teach me how to think in 0s and 1s? Use `assemble.py` to convert human-readable assembly into machine code!
+Want to talk to me 0s and 1s? Use `assemble.py` to convert human-readable assembly into machine code!
 
 ### Usage:
 ```sh
@@ -64,11 +64,22 @@ This command converts `program.txt` into binary machine code.
 
 ---
 
+## 📖 Online Documentation
+Check out the full guide here: [SimpleRisc Documentation](https://puneethreddy592.github.io/assemble_unassemble/)
+
+---
+---
+
 ## 📂 Project Structure
 ```
-├── README.md        # 📖 Project Documentation
-├── assemble.py      # 🔄 Converts Assembly to Binary
-├── unassemble.py    # 🔄 Converts Binary to Assembly
+── README.md        # 📖 Project Documentation
+├── about.html       # 🌐 About SimpleRISC Page
+├── assemble.py      # 🔄 Converts Assembly to Binary (New output modes)
+├── guide.html       # 📚 Guide for Using the Tools
+├── human.html       # 🤖 Instruction page
+├── index.html       # 🏠 Main Landing Page
+├── unassemble.py    # 🔄 Converts Binary to Assembly (New output mode)
+├── verifcation.png  
 ```
 
 ---
@@ -82,6 +93,9 @@ This command converts `program.txt` into binary machine code.
 ✅ Supports Labels & Immediate Values  
 
 ---
+## ⚠️ Only Constraints
+The assembly code must wrriten following the guide lines. 
+[Check Guidelines here](https://puneethreddy592.github.io/assemble_unassemble/guide.html)
 
 ## 🤝 Contributing
 
