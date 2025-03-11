@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleRISC Instructions</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7; /* Updated primary color (purple) */
+            --accent-color: #00b894; /* Updated accent color (teal) */
+            --text-color: #2d3436; /* Updated text color (dark gray) */
+            --bg-color: #dfe6e9; /* Updated background color (light gray) */
+            --card-bg: #ffffff; /* Card background (white) */
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --header-bg: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Updated header gradient */
+            --border-radius: 12px;
+        }
+        
+        .dark-mode {
+            --primary-color: #a29bfe; /* Lighter purple for dark mode */
+            --accent-color: #00cec9; /* Brighter teal for dark mode */
+            --text-color: #f0f0f0; /* Light text for dark mode */
+            --bg-color: #2d3436; /* Dark background for dark mode */
+            --card-bg: #1e1e1e; /* Dark card background */
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            --header-bg: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Same header gradient for dark mode */
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: var(--header-bg);
+            color: white;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+        
+        .header h2 {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .toggle-theme {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .container h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .container h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 60px;
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .instruction-groups {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .instruction-group {
+            flex: 1;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .dark-mode .instruction-group {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .instruction-group h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode th, .dark-mode td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        .dark-mode tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark-mode tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .code-column {
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+        
+        .instruction-categories {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 10px;
+        }
+        
+        .dark-mode .instruction-categories {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category-btn {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        
+        .category-btn.active {
+            color: var(--primary-color);
+        }
+        
+        .category-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px 3px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>SimpleRISC Instructions</h2>
+        <div class="header-buttons">
+            <button class="btn" onclick="window.location.href='about.html'">About SimpleRISC</button>
+            <button class="btn" onclick="window.location.href='guide.html'">Guide</button> <!-- New button -->
+            <button class="btn toggle-theme" onclick="toggleTheme()">🌙</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Complete Instruction Set</h2>
+        
+        <div class="instruction-groups">
+            <div class="instruction-group">
+                <h3>Arithmetic & Logic</h3>
+                <p>Operations for mathematical and logical processing</p>
+            </div>
+            <div class="instruction-group">
+                <h3>Data Transfer</h3>
+                <p>Instructions for moving data between registers and memory</p>
+            </div>
+            <div class="instruction-group">
+                <h3>Control Flow</h3>
+                <p>Branch and function call instructions to control program execution</p>
+            </div>
+        </div>
+        
+        <table>
+            <tr>
+                <th>Instruction</th>
+                <th>Opcode</th>
+                <th>Format</th>
+                <th>Category</th>
+            </tr>
+            <tr>
+                <td>add</td>
+                <td class="code-column">00000</td>
+                <td>add rd, rs1, (rs2/imm)</td>
+                <td>Arithmetic</td>
+            </tr>
+            <tr>
+                <td>sub</td>
+                <td class="code-column">00001</td>
+                <td>sub rd, rs1, (rs2/imm)</td>
+                <td>Arithmetic</td>
+            </tr>
+            <tr>
+                <td>mul</td>
+                <td class="code-column">00010</td>
+                <td>mul rd, rs1, (rs2/imm)</td>
+                <td>Arithmetic</td>
+            </tr>
+            <tr>
+                <td>div</td>
+                <td class="code-column">00011</td>
+                <td>div rd, rs1, (rs2/imm)</td>
+                <td>Arithmetic</td>
+            </tr>
+            <tr>
+                <td>mod</td>
+                <td class="code-column">00100</td>
+                <td>mod rd, rs1, (rs2/imm)</td>
+                <td>Arithmetic</td>
+            </tr>
+            <tr>
+                <td>cmp</td>
+                <td class="code-column">00101</td>
+                <td>cmp rs1, (rs2/imm)</td>
+                <td>Comparison</td>
+            </tr>
+            <tr>
+                <td>and</td>
+                <td class="code-column">00110</td>
+                <td>and rd, rs1, (rs2/imm)</td>
+                <td>Logical</td>
+            </tr>
+            <tr>
+                <td>or</td>
+                <td class="code-column">00111</td>
+                <td>or rd, rs1, (rs2/imm)</td>
+                <td>Logical</td>
+            </tr>
+            <tr>
+                <td>not</td>
+                <td class="code-column">01000</td>
+                <td>not rd, (rs2/imm)</td>
+                <td>Logical</td>
+            </tr>
+            <tr>
+                <td>mov</td>
+                <td class="code-column">01001</td>
+                <td>mov rd, (rs2/imm)</td>
+                <td>Data Transfer</td>
+            </tr>
+            <tr>
+                <td>lsl</td>
+                <td class="code-column">01010</td>
+                <td>lsl rd, rs1, (rs2/imm)</td>
+                <td>Shift</td>
+            </tr>
+            <tr>
+                <td>lsr</td>
+                <td class="code-column">01011</td>
+                <td>lsr rd, rs1, (rs2/imm)</td>
+                <td>Shift</td>
+            </tr>
+            <tr>
+                <td>asr</td>
+                <td class="code-column">01100</td>
+                <td>asr rd, rs1, (rs2/imm)</td>
+                <td>Shift</td>
+            </tr>
+            <tr>
+                <td>nop</td>
+                <td class="code-column">01101</td>
+                <td>nop</td>
+                <td>Control</td>
+            </tr>
+            <tr>
+                <td>ld</td>
+                <td class="code-column">01110</td>
+                <td>ld rd, imm[rs1]</td>
+                <td>Memory</td>
+            </tr>
+            <tr>
+                <td>st</td>
+                <td class="code-column">01111</td>
+                <td>st rd, imm[rs1]</td>
+                <td>Memory</td>
+            </tr>
+            <tr>
+                <td>beq</td>
+                <td class="code-column">10000</td>
+                <td>beq offset</td>
+                <td>Branch</td>
+            </tr>
+            <tr>
+                <td>bgt</td>
+                <td class="code-column">10001</td>
+                <td>bgt offset</td>
+                <td>Branch</td>
+            </tr>
+            <tr>
+                <td>b</td>
+                <td class="code-column">10010</td>
+                <td>b offset</td>
+                <td>Branch</td>
+            </tr>
+            <tr>
+                <td>call</td>
+                <td class="code-column">10011</td>
+                <td>call offset</td>
+                <td>Function</td>
+            </tr>
+            <tr>
+                <td>ret</td>
+                <td class="code-column">10100</td>
+                <td>ret</td>
+                <td>Function</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+            let themeButton = document.querySelector(".toggle-theme");
+            themeButton.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+        }
+    </script>
+</body>
+</html>

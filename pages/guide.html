@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleRISC Documentation</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7; /* Updated primary color (purple) */
+            --secondary-color: #00b894; /* Updated secondary color (teal) */
+            --accent-color: #ff7675; /* Updated accent color (coral) */
+            --background-color: #f8fafc; /* Light background */
+            --text-color: #2d3436; /* Dark text color */
+            --code-bg: #e2e8f0; /* Code block background */
+            --card-bg: #ffffff; /* Card background */
+            --border-color: #e2e8f0; /* Border color */
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            --primary-color: #a29bfe; /* Lighter purple for dark mode */
+            --secondary-color: #00cec9; /* Brighter teal for dark mode */
+            --accent-color: #ff7675; /* Coral remains the same */
+            --background-color: #121212; /* Dark background */
+            --text-color: #f0f0f0; /* Light text color */
+            --code-bg: #2d3436; /* Dark code block background */
+            --card-bg: #1e1e1e; /* Dark card background */
+            --border-color: #333333; /* Dark border color */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .instruction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .instruction-item {
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            padding: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .instruction-category {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .instruction-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-icon">⚙️</span>
+            <span>SimpleRISC Documentation</span>
+        </div>
+        <nav>
+            <a href="about.html" class="nav-button">About</a>
+            <a href="human.html" class="nav-button">Instructions</a>
+            <button class="dark-mode-toggle" id="theme-toggle">🌙</button> <!-- Dark mode toggle -->
+        </nav>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2>SimpleRISC Architecture</h2>
+            <p>Complete documentation for the SimpleRISC architecture. Use this reference to understand the instruction set, encoding formats, and more.</p>
+        </div>
+
+        <h2 class="section-title">1. Instruction Format</h2>
+        <div class="card">
+            <p>Each instruction must follow the opcode format as defined in the assembler.</p>
+            
+            <h3>Supported Instructions</h3>
+            <div class="instruction-grid">
+                <div class="instruction-item">
+                    <div class="instruction-category">Arithmetic & Logical</div>
+                    <code>add, sub, mul, div, mod, and, or, lsl, lsr, asr</code>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-category">Memory Operations</div>
+                    <code>ld, st</code>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-category">Control Flow</div>
+                    <code>b, beq, bgt, call, ret</code>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-category">Other</div>
+                    <code>cmp, not, mov, nop, hlt</code>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">2. Instruction Size</h2>
+        <div class="card">
+            <p>Every instruction occupies <strong>4 bytes</strong> in memory.</p>
+        </div>
+
+        <h2 class="section-title">3. Comment Syntax</h2>
+        <div class="card">
+            <p>Comments start with a <code>;</code> and extend to the end of the line.</p>
+            <p>Example:</p>
+            <div class="code-block">add r1, r2, r3 ; This is a comment</div>
+        </div>
+
+        <h2 class="section-title">4. Label Guidelines</h2>
+        <div class="card">
+            <h3>Label Definition</h3>
+            <p>Labels start with a <code>.</code> and end with a <code>:</code></p>
+            <p>Example:</p>
+            <div class="code-block">.loop: 
+    add r1, r2, r3 
+    b .loop</div>
+            
+            <h3>Predefined Labels</h3>
+            <p><code>.start</code>, <code>.main</code>, and <code>.org</code> define the starting address.</p>
+            <p>Format:</p>
+            <div class="code-block">.start 0x1000</div>
+            <p>If <code>.start</code> is provided, all addresses will be shifted accordingly.</p>
+            
+            <h3>Branch Labels</h3>
+            <p>Labels used in <code>b, beq, bgt, call</code> must be predefined in the assembly file.</p>
+            <p>Example:</p>
+            <div class="code-block">b .loop</div>
+        </div>
+
+        <h2 class="section-title">5. Register Usage</h2>
+        <div class="card">
+            <h3>Register Naming</h3>
+            <p>Registers are named <code>r0</code> to <code>r15</code>.</p>
+            <p>Example:</p>
+            <div class="code-block">add r1, r2, r3</div>
+            
+            <h3>Immediate vs Register Operand</h3>
+            <p>Some instructions support both immediate values and registers.</p>
+            <p>Immediate values can be <strong>decimal, binary (0b...), or hex (0x...)</strong>.</p>
+            <p>Example:</p>
+            <div class="code-block">mov r1, 10    ; Immediate value
+add r2, r1, r3  ; Register operands</div>
+        </div>
+
+        <h2 class="section-title">6. Instruction Variants</h2>
+        <div class="card">
+            <h3>Modified Arithmetic Instructions (<code>addu</code>, <code>addh</code>, etc.)</h3>
+            <ul>
+                <li><code>u</code> → Unsigned mode</li>
+                <li><code>h</code> → High mode</li>
+            </ul>
+            <p>Example:</p>
+            <div class="code-block">addu r1, r2, 10  ; Unsigned addition
+addh r3, r4, r5  ; High mode addition</div>
+            
+            <h3>Load/Store Format</h3>
+            <p>Load and Store instructions have special syntax:</p>
+            <div class="code-block">ld r1, 0x1000[r2]  ; Load from memory address
+st r3, 0x2000[r4]  ; Store to memory address</div>
+        </div>
+
+        <h2 class="section-title">7. Memory Addressing & Constants</h2>
+        <div class="card">
+            <h3>Allowed Immediate Value Ranges</h3>
+            <ul>
+                <li><strong>Arithmetic Immediate (16-bit signed):</strong> <code>-32,768 to 32,767</code></li>
+                <li><strong>Branch Offset (27-bit signed, divided by 4):</strong> <code>-67108864 to 67108863</code></li>
+            </ul>
+            
+            <h3>Memory Access Guidelines</h3>
+            <p>Memory addresses must be properly aligned (multiples of 4).</p>
+            <p>Example:</p>
+            <div class="code-block">ld r1, 0x1004[r2]  ; Valid</div>
+        </div>
+
+        <h2 class="section-title">8. Control Flow Guidelines</h2>
+        <div class="card">
+            <h3>Branching & Jumping</h3>
+            <p>Use <code>b</code>, <code>beq</code>, <code>bgt</code>, and <code>call</code> with labels.</p>
+            <p>Example:</p>
+            <div class="code-block">beq r1, .loop</div>
+            
+            <h3>Function Return</h3>
+            <p>Use <code>call</code> to jump and <code>ret</code> to return.</p>
+            <p>Example:</p>
+            <div class="code-block">call .function
+ret</div>
+            
+            <h3>Halting Execution</h3>
+            <p>The <code>hlt</code> instruction stops the program.</p>
+            <p>Example:</p>
+            <div class="code-block">hlt</div>
+        </div>
+
+        <h2 class="section-title">9. Example Assembly Program</h2>
+        <div class="card">
+            <div class="code-block">.start 0x1000
+
+.main:
+    mov r1, 10
+    mov r2, 20
+    add r3, r1, r2
+    b .end
+
+.loop:
+    sub r1, r1, 1
+    bgt r1, .loop
+
+.end:
+    hlt</div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 SimpleRISC Documentation. All rights reserved.
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+    </script>
+</body>
+</html>
