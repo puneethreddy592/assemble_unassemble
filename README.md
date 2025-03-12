@@ -4,6 +4,15 @@ Hello, SimpleRisc Robot! Our world is made of 0s and 1s, and unfortunately, we c
 
 ---
 
+## 🚀 New! Download the SimpleRisc App (.exe)
+
+No need to set up Python! You can now download and use **SimpleRisc** as a standalone application.
+
+📥 **Download here:**  
+🔗 [SimpleRisc App (Windows)](https://drive.google.com/file/d/1ofCs7vQzGzuKeRKPL3X3AkvzpzIW7E1v/view?usp=sharing)
+
+---
+
 ## 🔄 Using the Disassembler (`unassemble.py`)
 
 Have some binary code but don't know what it means? Use `unassemble.py` to convert it back into human-readable assembly!
@@ -23,9 +32,16 @@ python unassemble.py -f input.bin -o output.txt [-i]
 ```sh
 python unassemble.py -f machine_code.txt -o decoded.txt -i
 ```
+### **App Version**  
+1. Open the **SimpleRisc App**.
+2. Go to the **Disassemble** tab.
+3. Paste binary instructions and select the output format.
+4. Click **Disassemble** to view the output.
+---
+🖼 **Example Screenshot:**  
+![Disassemble Example](unassemble.png)
 
 ---
-
 ## 🔍 Are You Human?
 Oh... wait! You are not a robot? 🤖❌ Are you human?
 
@@ -63,6 +79,16 @@ python assemble.py -f program.txt -b
 This command converts `program.txt` into binary machine code.
 
 ---
+### **App Version**  
+1. Open the **SimpleRisc App**.
+2. Go to the **Assemble** tab.
+3. Paste assembly code and choose the desired output format.
+4. Click **Assemble** to generate the output.
+
+🖼 **Example Screenshot:**  
+![Assemble Example](assemble.png)
+
+---
 
 ## 📖 Online Documentation
 Check out the full guide here: [SimpleRisc Documentation](https://puneethreddy592.github.io/assemble_unassemble/)
@@ -79,7 +105,9 @@ Check out the full guide here: [SimpleRisc Documentation](https://puneethreddy59
 ├── human.html       # 🤖 Instruction page
 ├── index.html       # 🏠 Main Landing Page
 ├── unassemble.py    # 🔄 Converts Binary to Assembly (New output mode)
-├── verifcation.png  
+├── verifcation.png
+├── assemble.png     # 🖼 Example screenshot for Assemble tab
+├── unassemble.png   # 🖼 Example screenshot for Disassemble tab
 ```
 
 ---
@@ -91,11 +119,14 @@ Check out the full guide here: [SimpleRisc Documentation](https://puneethreddy59
 ✅ Tokenization & Instruction Encoding  
 ✅ Multiple Output Formats (Binary, Hex, Text)  
 ✅ Supports Labels & Immediate Values  
+✅ **Standalone Windows App Available!**  
 
 ---
 ## ⚠️ Only Constraints
-The assembly code must wrriten following the guide lines. 
-[Check Guidelines here](https://puneethreddy592.github.io/assemble_unassemble/guide.html)
+- The **assembly code** must follow the guidelines strictly.  
+  🔗 [Check Guidelines here](https://puneethreddy592.github.io/assemble_unassemble/guide.html)  
+- **Disassemble feature in the app is not fully tested yet.**  
+  ⚠️ There might be some errors in disassembling output.  
 
 ## 🤝 Contributing
 
